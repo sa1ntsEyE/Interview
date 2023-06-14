@@ -23,21 +23,19 @@ function Maintable() {
                 const response = await fetch(url);
                 const listItems = await response.json();
                 setItems(listItems);
-                console.log(listItems)
 
             } catch (err) {
                 console.log(err.stack)
             }
         }
-        (async () => await fetchItems())();
-    }, [])
 
-    useEffect(() => {
-        const handleClick = (event) => {
+        const handleSidebarClick = (event) => {
             const activeElements = document.querySelectorAll('.active');
             const change = document.getElementById('Change');
             const sidebar = document.getElementById('sidebar');
-            if (activeElements.length > 0 && !activeElements[0].contains(event.target) && !activeElements[1].contains(event.target) && !change.contains(event.target) && !sidebar.contains(event.target)) {
+            if (activeElements.length > 0 && !activeElements[0].contains(event.target)
+                && !activeElements[1].contains(event.target) && !change.contains(event.target)
+                && !sidebar.contains(event.target)) {
                 activeElements.forEach((el) => {
                     el.classList.remove('active');
                     document.querySelectorAll(".sidebar--body--update")[0].style.display = "none";
@@ -46,25 +44,28 @@ function Maintable() {
                 });
             }
         };
-        document.addEventListener('click', handleClick);
-        return () => document.removeEventListener('click', handleClick);
-    }, []);
 
-    useEffect(() => {
-        const handleClick = (event) => {
+        const handleAddCardClick = (event) => {
             const closeWindow = document.getElementById("addcard");
             const open = document.getElementById("open");
             if (closeWindow && !closeWindow.contains(event.target) && !open.contains(event.target)) {
                 closeWindow.style.display = "none";
             }
         };
-        document.addEventListener('click', handleClick);
-        return () => document.removeEventListener('click', handleClick);
+
+        fetchItems();
+        document.addEventListener('click', handleSidebarClick);
+        document.addEventListener('click', handleAddCardClick);
+
+        return () => {
+            document.removeEventListener('click', handleSidebarClick);
+            document.removeEventListener('click', handleAddCardClick);
+        };
     }, []);
+
 
     const handleClick = (id) => {
         const jsonItem = items.find((item) => item.id === Number(id));
-        console.log(jsonItem);
         setSelectedData(jsonItem);
         setShowData({
             id: jsonItem.id,
